@@ -1,5 +1,10 @@
 #!/usr/bin/env nextflow
+nextflow.enable.dsl=2
+//Import non-process modules
+include {help_message; version_message; complete_message; error_message; pipeline_start_message} from './modules/messages'
+include {help_or_version} from './modules/params_utilities'
 
+version = '1.0'
 
 // Import modules
 include { PREPROCESS; GET_BASES } from "$projectDir/modules/preprocess"
@@ -11,6 +16,14 @@ include { GET_POPPUNK_DB; GET_POPPUNK_EXT_CLUSTERS; LINEAGE } from "$projectDir/
 include { GET_SEROBA_DB; CREATE_SEROBA_DB; SEROTYPE } from "$projectDir/modules/serotype"
 include { MLST } from "$projectDir/modules/mlst"
 include { PBP_RESISTANCE; GET_PBP_RESISTANCE } from "$projectDir/modules/amr"
+
+// help and version messages
+help_or_version(params, version)
+//final_params = check_params(merged_params)
+// starting pipeline
+pipeline_start_message(version, final_params)
+
+
 
 // Main workflow
 workflow {
